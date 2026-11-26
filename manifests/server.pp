@@ -376,8 +376,10 @@ class zabbix::server (
     }
 
     $require_for_service = [Package["zabbix-server-${db}"], File[$include_dir], File[$server_configfile_path], Zabbix::Startup['zabbix-server']]
+    $subscribe_for_service = [File[$server_configfile_path], Zabbix::Startup['zabbix-server']]
   } else {
     $require_for_service = [Package["zabbix-server-${db}"], File[$include_dir], File[$server_configfile_path]]
+    $subscribe_for_service = [File[$server_configfile_path]]
   }
 
   if $server_configfile_path != '/etc/zabbix/zabbix_server.conf' {
@@ -425,7 +427,7 @@ class zabbix::server (
         hasstatus  => true,
         hasrestart => true,
         require    => $require_for_service,
-        subscribe  => File[$server_configfile_path],
+        subscribe  => $subscribe_for_service,
       }
     }
   }

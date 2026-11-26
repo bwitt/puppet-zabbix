@@ -334,11 +334,18 @@ class zabbix::agent (
     false => Package[$zabbix_package_agent]
   }
 
+  # Restart the service when its startup script changes
+  $service_subscribe = $manage_startup_script ? {
+    true  => Zabbix::Startup[$servicename],
+    false => undef,
+  }
+
   # Controlling the 'zabbix-agent' service
   service { $servicename:
-    ensure  => $service_ensure,
-    enable  => $service_enable,
-    require => $service_require,
+    ensure    => $service_ensure,
+    enable    => $service_enable,
+    require   => $service_require,
+    subscribe => $service_subscribe,
   }
 
   # Override the service provider on AIX

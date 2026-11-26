@@ -264,6 +264,7 @@ describe 'zabbix::agent' do
             .with_enable(true)
             .with_service_provider((facts[:os]['family'] == 'AIX') ? 'init' : nil)
             .that_requires(["Package[#{package_name}]", "Zabbix::Startup[#{service_name}]"])
+            .that_subscribes_to("Zabbix::Startup[#{service_name}]")
         end
 
         it { is_expected.to contain_zabbix__startup(service_name).that_requires("Package[#{package_name}]") }

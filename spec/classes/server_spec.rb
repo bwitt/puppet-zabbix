@@ -174,6 +174,7 @@ describe 'zabbix::server' do
         end
 
         it { is_expected.to contain_zabbix__startup('zabbix-server') }
+        it { is_expected.to contain_service('zabbix-server').that_subscribes_to(['File[/etc/zabbix/zabbix_server.conf]', 'Zabbix::Startup[zabbix-server]']) }
       end
 
       # If manage_service is true (default), it should create a service

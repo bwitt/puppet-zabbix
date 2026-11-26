@@ -165,3 +165,34 @@ describe "zabbix::agent class with agent2 and zabbix_version #{zabbix_version}" 
     end
   end
 end
+
+describe "zabbix::agent class with managed startup script and zabbix_version #{zabbix_version}" do
+  before(:all) do
+    prepare_host
+  end
+
+  agent_manifest = lambda do |service_params|
+    <<-PUPPET
+    class { 'zabbix::agent':
+      server                    => '192.168.20.11',
+      manage_startup_script     => true,
+      additional_service_params => '#{service_params}',
+      zabbix_version            => '#{zabbix_version}',
+    }
+    PUPPET
+  end
+
+  def agent_pid
+    shell('systemctl show -p MainPID --value zabbix-agent').stdout.strip
+  end
+
+  it 'restarts the service when the startup script changes' do
+    apply_manifest(agent_manifest.call('--foreground'), catch_failures: true)
+    old_pid = agent_pid
+    expect(old_pid).not_to eq('0')
+
+    apply_manifest(agent_manifest.call('-f'), catch_failures: true)
+    expect(agent_pid).not_to eq(old_pid)
+    expect(shell("ps -o args= -p #{agent_pid}").stdout).to match(%r{zabbix_agentd -f -c})
+  end
+end
