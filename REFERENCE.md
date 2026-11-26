@@ -3224,6 +3224,8 @@ Default value: `$zabbix::params::proxy_snmptrapper`
 Data type: `Any`
 
 List of comma delimited ip addresses that the trapper should listen on.
+You can also specify a network interface name (e.g. 'eth1' or 'bond0.73')
+and its ip address will be used.
 
 Default value: `$zabbix::params::proxy_listenip`
 

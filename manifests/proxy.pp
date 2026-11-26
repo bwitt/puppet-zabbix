@@ -84,7 +84,10 @@
 # @param vaulturl Vault server HTTP[S] URL. System-wide CA certificates directory will be used if SSLCALocation is not specified.
 # @param snmptrapperfile Temporary file used for passing data from snmp trap daemon to the server.
 # @param snmptrapper If 1, snmp trapper process is started.
-# @param listenip List of comma delimited ip addresses that the trapper should listen on.
+# @param listenip
+#   List of comma delimited ip addresses that the trapper should listen on.
+#   You can also specify a network interface name (e.g. 'eth1' or 'bond0.73')
+#   and its ip address will be used.
 # @param housekeepingfrequency How often Zabbix will perform housekeeping procedure (in hours).
 # @param cachesize Size of configuration cache, in MB.
 # @param startdbsyncers Number of pre-forked instances of db syncers.
@@ -307,16 +310,9 @@ class zabbix::proxy (
   # to network name. If more than 1 interfaces are available, we
   # can find the ipaddress of this specific interface if listenip
   # is set to for example "eth1" or "bond0.73".
-  if ($listenip != undef) {
-    if ($listenip =~ /^(eth|lo|bond|lxc|eno|tap|tun).*/) {
-      $listen_ip = getvar("::ipaddress_${listenip}")
-    } elsif $listenip =~ Stdlib::IP::Address {
-      $listen_ip = $listenip
-    } else {
-      $listen_ip = undef
-    }
-  } else {
-    $listen_ip = undef
+  $listen_ip = $listenip ? {
+    /^(e|lo|bond|lxc|tap|tun|virbr).*/ => fact("networking.interfaces.${listenip}.ip"),
+    default => $listenip,
   }
 
   # So if manage_resources is set to true, we can send some data

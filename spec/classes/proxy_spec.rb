@@ -93,6 +93,32 @@ describe 'zabbix::proxy' do
         it { is_expected.to contain_zabbix__userparameters('Zabbix_Proxy') }
       end
 
+      context 'with listenip set to an interface name' do
+        let :facts do
+          facts.merge(networking: facts[:networking].merge('interfaces' => { 'eth1' => { 'ip' => '10.0.0.5' } }))
+        end
+        let :params do
+          {
+            listenip: 'eth1',
+            manage_resources: true,
+            mode: 1,
+          }
+        end
+
+        it { is_expected.to contain_file('/etc/zabbix/zabbix_proxy.conf').with_content %r{^ListenIP=10.0.0.5$} }
+        it { is_expected.to contain_class('zabbix::resources::proxy').with_ipaddress('10.0.0.5') }
+      end
+
+      context 'with listenip set to a list of IP addresses' do
+        let :params do
+          {
+            listenip: '10.0.0.5,10.0.0.6',
+          }
+        end
+
+        it { is_expected.to contain_file('/etc/zabbix/zabbix_proxy.conf').with_content %r{^ListenIP=10.0.0.5,10.0.0.6$} }
+      end
+
       context 'with zabbix::database::postgresql class' do
         let :params do
           {
