@@ -90,7 +90,19 @@ describe 'zabbix::proxy' do
         end
 
         it { is_expected.to contain_class('zabbix::resources::proxy') }
-        it { is_expected.to contain_zabbix__userparameters('Zabbix_Proxy') }
+        it { is_expected.to contain_zabbix__userparameters('Zabbix_Proxy_Zabbix proxy health').with_template('Zabbix proxy health') }
+      end
+
+      describe 'when manage_resources is true and zbx_templates is set' do
+        let :params do
+          {
+            manage_resources: true,
+            zbx_templates: ['Zabbix proxy health', 'Linux by Zabbix agent'],
+          }
+        end
+
+        it { is_expected.to contain_zabbix__userparameters('Zabbix_Proxy_Zabbix proxy health').with_template('Zabbix proxy health') }
+        it { is_expected.to contain_zabbix__userparameters('Zabbix_Proxy_Linux by Zabbix agent').with_template('Linux by Zabbix agent') }
       end
 
       context 'with zabbix::database::postgresql class' do

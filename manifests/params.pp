@@ -347,7 +347,7 @@ class zabbix::params {
   $agent_zabbix_alias                       = undef
   $agent_zbx_groups                         = ['Linux servers',]
   $agent_zbx_group_create                   = true
-  $agent_zbx_templates                      = ['Template OS Linux', 'Template App SSH Service']
+  $agent_zbx_templates                      = ['Linux by Zabbix agent']
   $apache_status                            = false
   $monitored_by_proxy                       = undef
   # provided by puppet/systemd
@@ -467,7 +467,7 @@ class zabbix::params {
   $proxy_vmwareperffrequency                = undef
   $proxy_vmwaretimeout                      = undef
   $proxy_zabbix_server_host                 = undef
-  $proxy_zbx_templates                      = ['Template App Zabbix Proxy']
+  $proxy_zbx_templates                      = ['Zabbix proxy health']
   $proxy_socketdir                          = '/var/run/zabbix'
 
   # Java Gateway specific params

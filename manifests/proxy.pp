@@ -19,7 +19,7 @@
 # @param use_ip
 #   When true, when creating proxies via the zabbix-api, it will configure that
 #   connection should me made via ip, not fqdn.
-# @param zbx_templates Template which will be added when proxy is configured.
+# @param zbx_templates Templates which will be added when proxy is configured.
 # @param proxy_configfile_path Proxy config file path defaults to /etc/zabbix/zabbix_proxy.conf
 # @param proxy_service_name The service name of Zabbix proxy.
 # @param mode Proxy operating mode.
@@ -340,7 +340,9 @@ class zabbix::proxy (
       }
     }
 
-    zabbix::userparameters { 'Zabbix_Proxy': template => 'Template App Zabbix Proxy', }
+    [$zbx_templates].flatten.each |$template| {
+      zabbix::userparameters { "Zabbix_Proxy_${template}": template => $template, }
+    }
   }
 
   # Get the correct database_type. We need this for installing the

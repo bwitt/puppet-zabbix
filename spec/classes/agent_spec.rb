@@ -142,7 +142,7 @@ describe 'zabbix::agent' do
           }
         end
 
-        it { is_expected.to contain_class('zabbix::resources::agent') }
+        it { is_expected.to contain_class('zabbix::resources::agent').with_templates(['Linux by Zabbix agent']) }
       end
 
       context 'configuration file with hostnameitem' do

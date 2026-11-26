@@ -2762,7 +2762,7 @@ Default value: `$zabbix::params::proxy_use_ip`
 
 Data type: `Any`
 
-Template which will be added when proxy is configured.
+Templates which will be added when proxy is configured.
 
 Default value: `$zabbix::params::proxy_zbx_templates`
 
