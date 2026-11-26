@@ -1471,7 +1471,7 @@ Default value: `$zabbix::params::zabbix_version`
 
 Data type: `Any`
 
-The state of the package that needs to be installed: present or latest.
+The state of the package that needs to be installed: present, latest or a specific version.
 
 Default value: `$zabbix::params::zabbix_package_state`
 

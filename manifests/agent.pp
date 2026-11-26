@@ -1,6 +1,6 @@
 # @summary This will install and configure the zabbix-agent deamon
 # @param zabbix_version This is the zabbix version.
-# @param zabbix_package_state The state of the package that needs to be installed: present or latest.
+# @param zabbix_package_state The state of the package that needs to be installed: present, latest or a specific version.
 # @param zabbix_package_agent The name of the agent package that we manage
 # @param manage_firewall When true, it will create iptables rules.
 # @param manage_repo When true, it will create repository for installing the agent.
@@ -284,7 +284,7 @@ class zabbix::agent (
   if $facts['kernel'] == 'windows' {
     if $manage_choco {
       package { $zabbix_package_agent:
-        ensure   => $zabbix_version,
+        ensure   => $zabbix_package_state,
         provider => $zabbix_package_provider,
         tag      => 'zabbix',
       }

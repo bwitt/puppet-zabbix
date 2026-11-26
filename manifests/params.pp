@@ -128,11 +128,7 @@ class zabbix::params {
     }
   }
 
-  if downcase($facts['kernel']) == 'windows' {
-    $zabbix_version = '4.4.5' # FIXME
-  } else {
-    $zabbix_version = '7.0'
-  }
+  $zabbix_version = '7.0'
 
   $zabbix_package_state                     = 'present'
   $zabbix_proxy                             = 'localhost'

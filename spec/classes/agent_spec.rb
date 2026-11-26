@@ -68,17 +68,22 @@ describe 'zabbix::agent' do
 
         # Make sure package will be installed, service running and ensure of directory.
         if facts[:os]['name'] == 'windows'
-          let :params do
-            {
-              zabbix_version: '4.4.5',
-            }
-          end
           it do
             is_expected.to contain_package(package_name).with(
-              ensure: '4.4.5',
+              ensure: 'present',
               provider: 'chocolatey',
               tag: 'zabbix',
             )
+          end
+
+          context 'with zabbix_package_state set to a version' do
+            let :params do
+              {
+                zabbix_package_state: '7.0.21',
+              }
+            end
+
+            it { is_expected.to contain_package(package_name).with_ensure('7.0.21').with_provider('chocolatey') }
           end
         else
 
