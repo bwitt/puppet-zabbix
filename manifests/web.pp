@@ -239,6 +239,11 @@ class zabbix::web (
     tag     => 'zabbix',
   }
 
+  # The package creates /etc/zabbix, the parent of the default template dir
+  if $manage_resources {
+    Package[$zabbix_web_package] -> File[$zabbix_template_dir]
+  }
+
   # Webinterface config file
   file { '/etc/zabbix/web/zabbix.conf.php':
     ensure  => file,

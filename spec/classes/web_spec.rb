@@ -151,6 +151,11 @@ describe 'zabbix::web' do
 
         it { is_expected.to contain_package('zabbixapi').with_provider('puppet_gem') }
         it { is_expected.to contain_file('/etc/zabbix/imported_templates').with_ensure('directory') }
+
+        it do
+          web_package = (facts[:os]['family'] == 'RedHat') ? 'zabbix-web' : 'zabbix-frontend-php'
+          is_expected.to contain_file('/etc/zabbix/imported_templates').that_requires("Package[#{web_package}]")
+        end
       end
 
       describe 'when manage_resources is false' do
