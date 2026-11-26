@@ -145,6 +145,21 @@ describe 'zabbix::agent' do
         it { is_expected.to contain_class('zabbix::resources::agent') }
       end
 
+      context 'configuration file with userparameter' do
+        let :params do
+          {
+            userparameter: ['mysql.ping,mysqladmin ping | grep -c alive', 'custom.echo[*],echo $1'],
+          }
+        end
+
+        it { is_expected.to contain_file(config_path).with_content %r{^UserParameter=mysql.ping,mysqladmin ping \| grep -c alive$} }
+        it { is_expected.to contain_file(config_path).with_content %r{^UserParameter=custom.echo\[\*\],echo \$1$} }
+      end
+
+      context 'configuration file without userparameter' do
+        it { is_expected.not_to contain_file(config_path).with_content %r{^UserParameter=} }
+      end
+
       context 'configuration file with hostnameitem' do
         let :params do
           {

@@ -115,7 +115,8 @@
 # @param include_dir You may include individual files or all files in a directory in the configuration file.
 # @param include_dir_purge Include dir to purge.
 # @param unsafeuserparameters Allow all characters to be passed in arguments to user-defined parameters.
-# @param userparameter User-defined parameter to monitor.
+# @param userparameter
+#   User-defined parameter(s) to monitor, in the format '<key>,<shell command>'.
 # @param loadmodulepath Full path to location of agent modules.
 # @param loadmodule Module to load at agent startup.
 # @param manage_startup_script
@@ -200,7 +201,7 @@ class zabbix::agent (
   $include_dir                                         = $zabbix::params::agent_include,
   $include_dir_purge                                   = $zabbix::params::agent_include_purge,
   $unsafeuserparameters                                = $zabbix::params::agent_unsafeuserparameters,
-  $userparameter                                       = $zabbix::params::agent_userparameter,
+  Optional[Variant[String[1], Array[String[1]]]] $userparameter = $zabbix::params::agent_userparameter,
   Optional[String[1]] $loadmodulepath                  = $zabbix::params::agent_loadmodulepath,
   $loadmodule                                          = $zabbix::params::agent_loadmodule,
   Optional[Variant[Array[Enum['unencrypted','psk','cert']],Enum['unencrypted','psk','cert']]] $tlsaccept = $zabbix::params::agent_tlsaccept,

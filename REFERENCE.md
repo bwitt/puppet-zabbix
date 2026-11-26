@@ -2107,9 +2107,9 @@ Default value: `$zabbix::params::agent_unsafeuserparameters`
 
 ##### <a name="-zabbix--agent--userparameter"></a>`userparameter`
 
-Data type: `Any`
+Data type: `Optional[Variant[String[1], Array[String[1]]]]`
 
-User-defined parameter to monitor.
+User-defined parameter(s) to monitor, in the format '<key>,<shell command>'.
 
 Default value: `$zabbix::params::agent_userparameter`
 
