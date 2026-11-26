@@ -33,7 +33,12 @@ describe "zabbix::agent class with zabbix_version #{zabbix_version}" do
     end
 
     describe file('/etc/zabbix/zabbix_agentd.conf') do
+      it { is_expected.to be_file }
       its(:content) { is_expected.not_to match %r{ListenIP=} }
+    end
+
+    describe port(10_050) do
+      it { is_expected.to be_listening }
     end
   end
 
@@ -110,7 +115,8 @@ describe "zabbix::agent class with agent2 and zabbix_version #{zabbix_version}" 
       it { is_expected.to be_enabled }
     end
 
-    describe file('/etc/zabbix/zabbix_agentd2.conf') do
+    describe file('/etc/zabbix/zabbix_agent2.conf') do
+      it { is_expected.to be_file }
       its(:content) { is_expected.not_to match %r{ListenIP=} }
     end
   end
@@ -158,10 +164,10 @@ describe "zabbix::agent class with agent2 and zabbix_version #{zabbix_version}" 
         }
         PUPPET
       end
+    end
 
-      describe file('/etc/zabbix/zabbix_agent2.conf') do
-        its(:content) { is_expected.to match %r{ListenIP=127.0.0.1} }
-      end
+    describe file('/etc/zabbix/zabbix_agent2.conf') do
+      its(:content) { is_expected.to match %r{ListenIP=127.0.0.1} }
     end
   end
 end

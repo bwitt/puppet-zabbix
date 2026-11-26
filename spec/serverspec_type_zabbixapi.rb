@@ -12,12 +12,12 @@ module Serverspec::Type
       @method = method
       @params = params
       @runner = Specinfra::Runner
-      @curl_base = "curl -s http://#{host}/api_jsonrpc.php -H \"Content-Type: application/json-rpc\" -d"
-
-      @response = query(@method, @params)
+      @curl_base = "curl -s http://#{host}/api_jsonrpc.php -H 'Content-Type: application/json-rpc'"
     end
 
+    # The query runs lazily, so the type can be used in describe blocks
     def result
+      @response ||= query(@method, @params)
       @response['result']
     end
 
@@ -32,28 +32,28 @@ module Serverspec::Type
         jsonrpc: '2.0',
         method: 'user.login',
         params: {
-          user: @user,
+          username: @user,
           password: @pass,
         },
-        auth: nil,
         id: 0,
       }.to_json
       do_request(data)['result']
     end
 
+    # apiinfo.version must be called without authentication
     def query(method, params)
       data = {
         jsonrpc: '2.0',
         method: method,
         params: params,
-        auth: token,
         id: 0,
       }.to_json
-      do_request(data)
+      do_request(data, (method == 'apiinfo.version') ? nil : token)
     end
 
-    def do_request(data)
-      command = "#{@curl_base} '#{data}'"
+    def do_request(data, auth = nil)
+      header = auth.nil? ? '' : " -H 'Authorization: Bearer #{auth}'"
+      command = "#{@curl_base}#{header} -d '#{data}'"
       result = @runner.run_command(command)
       JSON.parse(result.stdout.chomp)
     end
