@@ -1687,6 +1687,7 @@ Default value: `$zabbix::params::agent_denykey`
 Data type: `Any`
 
 Whether remote commands from zabbix server are allowed.
+Deprecated by Zabbix, use allowkey or denykey with system.run[*] instead.
 
 Default value: `$zabbix::params::agent_enableremotecommands`
 

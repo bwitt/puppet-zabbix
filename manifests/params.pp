@@ -304,7 +304,7 @@ class zabbix::params {
   $agent_debuglevel                         = '3'
   $agent_allowkey                           = undef
   $agent_denykey                            = undef
-  $agent_enableremotecommands               = '0'
+  $agent_enableremotecommands               = undef
   $agent_hostmetadata                       = undef
   $agent_hostmetadataitem                   = undef
   $agent_hostname                           = undef

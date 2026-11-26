@@ -65,6 +65,7 @@ describe 'zabbix::agent' do
         it { is_expected.to contain_apt__key('zabbix-A1848F5') }                 if facts[:os]['family'] == 'Debian'
         it { is_expected.to contain_apt__key('zabbix-FBABD5F') }                 if facts[:os]['family'] == 'Debian'
         it { is_expected.to contain_file(include_dir).with_ensure('directory') }
+        it { is_expected.not_to contain_file(config_path).with_content %r{^EnableRemoteCommands=} }
 
         # Make sure package will be installed, service running and ensure of directory.
         if facts[:os]['name'] == 'windows'
@@ -352,6 +353,7 @@ describe 'zabbix::agent' do
           it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^LogFile=/var/log/zabbix/zabbix_agentd.log$} }
           it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^LogType=file$} }
           it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^LogRemoteCommands=0$} }
+          it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^EnableRemoteCommands=1$} }
           it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^PidFile=/var/run/zabbix/zabbix_agentd.pid$} }
           it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^RefreshActiveChecks=120$} }
           it { is_expected.to contain_file('/etc/zabbix/zabbix_agentd.conf').with_content %r{^Server=192.168.1.1$} }

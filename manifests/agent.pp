@@ -39,7 +39,9 @@
 # @param sourceip Source ip address for outgoing connections.
 # @param allowkey Allow execution of item keys matching pattern.
 # @param denykey Deny execution of items keys matching pattern.
-# @param enableremotecommands Whether remote commands from zabbix server are allowed.
+# @param enableremotecommands
+#   Whether remote commands from zabbix server are allowed.
+#   Deprecated by Zabbix, use allowkey or denykey with system.run[*] instead.
 # @param logremotecommands Enable logging of executed shell commands as warnings.
 # @param server List of comma delimited ip addresses (or hostnames) of zabbix servers.
 # @param listenport Agent will listen on this port for connections from the server.
