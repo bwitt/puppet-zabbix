@@ -350,6 +350,13 @@ class zabbix::agent (
     }
   }
 
+  # The MSI installer doesn't create the directory for the configuration file
+  if $facts['kernel'] == 'windows' {
+    $agent_config_dir = dirname($agent_configfile_path)
+    ensure_resource('file', $agent_config_dir, { 'ensure' => 'directory' })
+    File[$agent_config_dir] -> File[$agent_configfile_path]
+  }
+
   # Configuring the zabbix-agent configuration file
   file { $agent_configfile_path:
     ensure  => file,

@@ -73,6 +73,8 @@ describe 'zabbix::agent' do
               zabbix_version: '4.4.5',
             }
           end
+          it { is_expected.to contain_file('C:/ProgramData/zabbix').with_ensure('directory').that_comes_before("File[#{config_path}]") }
+
           it do
             is_expected.to contain_package(package_name).with(
               ensure: '4.4.5',
