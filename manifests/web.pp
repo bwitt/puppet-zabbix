@@ -262,6 +262,9 @@ class zabbix::web (
   if $manage_vhost {
     include apache
     include apache::mod::dir
+
+    # Install the frontend (and its PHP dependencies) before apache purges unmanaged configs
+    Package[$zabbix_web_package] -> Class['apache']
     if $facts['os']['family'] == 'RedHat' {
       include apache::mod::proxy
       include apache::mod::proxy_fcgi

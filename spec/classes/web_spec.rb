@@ -122,6 +122,13 @@ describe 'zabbix::web' do
         it { is_expected.to contain_file('/etc/zabbix/web/zabbix.conf.php').with_group('apache') }
       end
 
+      describe 'with manage_vhost' do
+        it do
+          web_package = (facts[:os]['family'] == 'RedHat') ? 'zabbix-web' : 'zabbix-frontend-php'
+          is_expected.to contain_package(web_package).that_comes_before('Class[apache]')
+        end
+      end
+
       describe 'when manage_resources is true' do
         let :params do
           super().merge(
