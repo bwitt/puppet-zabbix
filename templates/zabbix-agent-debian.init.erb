@@ -10,7 +10,7 @@
 
 set -e
 
-NAME=zabbix_agentd
+NAME=<%= @agent_daemon %>
 DAEMON=/usr/sbin/$NAME
 DAEMON_OPTS="-c <%= @agent_configfile_path %>"
 DESC="Zabbix agent"

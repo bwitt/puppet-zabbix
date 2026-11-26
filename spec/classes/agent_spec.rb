@@ -511,6 +511,24 @@ describe 'zabbix::agent' do
 
         it { is_expected.to contain_package('zabbix-agent2') }
 
+        context 'with manage_startup_script and servicename zabbix-agent2' do
+          next unless %w[Debian RedHat].include?(facts[:os]['family'])
+
+          let :params do
+            {
+              zabbix_package_agent: 'zabbix-agent2',
+              servicename: 'zabbix-agent2',
+              agent_configfile_path: '/etc/zabbix/zabbix_agent2.conf',
+              include_dir: '/etc/zabbix/zabbix_agent2.d',
+              manage_startup_script: true,
+            }
+          end
+
+          it { is_expected.to compile.with_all_deps }
+          it { is_expected.to contain_zabbix__startup('zabbix-agent2').with_agent_daemon('zabbix_agent2') }
+          it { is_expected.to contain_file('/etc/systemd/system/zabbix-agent2.service').with_content(%r{^ExecStart=/usr/sbin/zabbix_agent2 --foreground -c /etc/zabbix/zabbix_agent2.conf$}) }
+        end
+
         it do
           is_expected.not_to contain_file(config_path).with_content(
             %r{^(LogRemoteCommands|StartAgents|MaxLinesPerSecond

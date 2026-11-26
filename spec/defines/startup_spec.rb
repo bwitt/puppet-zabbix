@@ -90,6 +90,52 @@ describe 'zabbix::startup', type: :define do # rubocop:disable RSpec/MultipleDes
 end
 
 describe 'zabbix::startup', type: :define do
+  let(:title) { 'zabbix-agent2' }
+  let :pre_condition do
+    'service{"zabbix-agent2":}'
+  end
+
+  on_supported_os.each do |os, os_facts|
+    next unless %w[Debian RedHat].include?(os_facts[:os]['family'])
+
+    context "on #{os}" do
+      let :params do
+        {
+          agent_configfile_path: '/etc/zabbix/zabbix_agent2.conf',
+          service_name: 'zabbix-agent',
+          agent_daemon: 'zabbix_agent2',
+        }
+      end
+
+      context 'on legacy init systems' do
+        let :facts do
+          os_facts.merge({ systemd: false })
+        end
+
+        it { is_expected.to compile.with_all_deps }
+        it { is_expected.not_to contain_file('/etc/init.d/zabbix-agent') }
+
+        case os_facts[:os]['family']
+        when 'Debian'
+          it { is_expected.to contain_file('/etc/init.d/zabbix-agent2').with_content(%r{^NAME=zabbix_agent2$}) }
+        when 'RedHat'
+          it { is_expected.to contain_file('/etc/init.d/zabbix-agent2').with_content(%r{^ZABBIX_BIN="\$\(type -P zabbix_agent2\)"$}) }
+        end
+      end
+
+      context 'on systemd' do
+        let :facts do
+          os_facts.merge({ systemd: true })
+        end
+
+        it { is_expected.to contain_file('/etc/init.d/zabbix-agent2').with_ensure('absent') }
+        it { is_expected.to contain_file('/etc/systemd/system/zabbix-agent2.service').with_content(%r{^ExecStart=/usr/sbin/zabbix_agent2  -c /etc/zabbix/zabbix_agent2.conf$}) }
+      end
+    end
+  end
+end
+
+describe 'zabbix::startup', type: :define do
   let(:title) { 'zabbix-server' }
 
   on_supported_os.each do |os, os_facts|

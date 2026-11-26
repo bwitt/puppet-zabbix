@@ -311,6 +311,11 @@ class zabbix::agent (
 
   # Ensure that the correct config file is used.
   if $manage_startup_script {
+    $agent_daemon = $agent2 ? {
+      true  => 'zabbix_agent2',
+      false => 'zabbix_agentd',
+    }
+
     zabbix::startup { $servicename:
       pidfile                   => $pidfile,
       agent_configfile_path     => $agent_configfile_path,
@@ -318,6 +323,7 @@ class zabbix::agent (
       additional_service_params => $additional_service_params,
       service_type              => $service_type,
       service_name              => 'zabbix-agent',
+      agent_daemon              => $agent_daemon,
       require                   => Package[$zabbix_package_agent],
     }
   }

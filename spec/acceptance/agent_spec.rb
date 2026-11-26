@@ -165,3 +165,35 @@ describe "zabbix::agent class with agent2 and zabbix_version #{zabbix_version}" 
     end
   end
 end
+
+describe "zabbix::agent class with agent2, managed startup script and zabbix_version #{zabbix_version}" do
+  before(:all) do
+    prepare_host
+  end
+
+  it_behaves_like 'an idempotent resource' do
+    let(:manifest) do
+      <<-PUPPET
+      class { 'zabbix::agent':
+        agent_configfile_path => '/etc/zabbix/zabbix_agent2.conf',
+        include_dir           => '/etc/zabbix/zabbix_agent2.d',
+        include_dir_purge     => false,
+        zabbix_package_agent  => 'zabbix-agent2',
+        servicename           => 'zabbix-agent2',
+        manage_startup_script => true,
+        server                => '192.168.20.11',
+        zabbix_version        => '#{zabbix_version}',
+      }
+      PUPPET
+    end
+  end
+
+  describe file('/etc/systemd/system/zabbix-agent2.service') do
+    its(:content) { is_expected.to match %r{^ExecStart=/usr/sbin/zabbix_agent2 --foreground -c /etc/zabbix/zabbix_agent2.conf$} }
+  end
+
+  describe service('zabbix-agent2') do
+    it { is_expected.to be_running }
+    it { is_expected.to be_enabled }
+  end
+end

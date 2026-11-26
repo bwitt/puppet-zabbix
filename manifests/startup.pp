@@ -11,6 +11,7 @@
 # @param service_type Systemd service type
 # @param manage_database When true, it will configure the database and execute the sql scripts.
 # @param service_name Name of the service. Defaults to the resource name
+# @param agent_daemon Name of the agent binary, e.g. zabbix_agentd or zabbix_agent2
 # @example
 #   zabbix::startup { 'agent': }
 #
@@ -27,6 +28,7 @@ define zabbix::startup (
   String $service_type                                   = 'simple',
   Optional[Boolean] $manage_database                     = undef,
   Optional[String] $service_name                         = $name,
+  String[1] $agent_daemon                                = 'zabbix_agentd',
 ) {
   case $title.downcase {
     /agent/: {
@@ -53,20 +55,20 @@ define zabbix::startup (
   } elsif $facts['os']['family'] in ['Debian', 'RedHat'] {
     # Currently other osfamily without systemd is not supported
     $osfamily_downcase = downcase($facts['os']['family'])
-    file { "/etc/init.d/${service_name}":
+    file { "/etc/init.d/${name}":
       ensure  => file,
       mode    => '0755',
-      content => template("zabbix/${name}-${osfamily_downcase}.init.erb"),
+      content => template("zabbix/${service_name}-${osfamily_downcase}.init.erb"),
     }
   } elsif $facts['os']['family'] in ['AIX'] {
-    file { "/etc/rc.d/init.d/${service_name}":
+    file { "/etc/rc.d/init.d/${name}":
       ensure  => file,
       mode    => '0755',
       content => epp('zabbix/zabbix-agent-aix.init.epp', { 'pidfile' => $pidfile, 'agent_configfile_path' => $agent_configfile_path, 'zabbix_user' => $zabbix_user }),
     }
-    file { "/etc/rc.d/rc2.d/S999${service_name}":
+    file { "/etc/rc.d/rc2.d/S999${name}":
       ensure => 'link',
-      target => "/etc/rc.d/init.d/${service_name}",
+      target => "/etc/rc.d/init.d/${name}",
     }
   } elsif ($facts['os']['family'] == 'windows') {
     exec { "install_agent_${name}":

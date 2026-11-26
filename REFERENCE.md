@@ -5783,6 +5783,7 @@ The following parameters are available in the `zabbix::startup` defined type:
 * [`service_type`](#-zabbix--startup--service_type)
 * [`manage_database`](#-zabbix--startup--manage_database)
 * [`service_name`](#-zabbix--startup--service_name)
+* [`agent_daemon`](#-zabbix--startup--agent_daemon)
 
 ##### <a name="-zabbix--startup--pidfile"></a>`pidfile`
 
@@ -5857,6 +5858,14 @@ Data type: `Optional[String]`
 Name of the service. Defaults to the resource name
 
 Default value: `$name`
+
+##### <a name="-zabbix--startup--agent_daemon"></a>`agent_daemon`
+
+Data type: `String[1]`
+
+Name of the agent binary, e.g. zabbix_agentd or zabbix_agent2
+
+Default value: `'zabbix_agentd'`
 
 ### <a name="zabbix--template"></a>`zabbix::template`
 
