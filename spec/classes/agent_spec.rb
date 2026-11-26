@@ -486,13 +486,24 @@ describe 'zabbix::agent' do
         end
       end
 
-      describe 'with systemd active', skip: 'user package provided instead systemd::unit_file ' do
+      describe 'with systemd active' do
         if facts[:kernel] == 'Linux'
           let :facts do
             super().merge(systemd: true)
           end
 
-          it { is_expected.to contain_systemd__unit_file('zabbix-agent.service') }
+          # the package provides the systemd unit
+          it { is_expected.not_to contain_systemd__unit_file("#{service_name}.service") }
+
+          context 'with manage_startup_script' do
+            let :params do
+              {
+                manage_startup_script: true,
+              }
+            end
+
+            it { is_expected.to contain_systemd__unit_file("#{service_name}.service") }
+          end
         end
       end
 
